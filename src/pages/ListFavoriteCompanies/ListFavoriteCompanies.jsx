@@ -3,11 +3,11 @@ import styled from 'styled-components';
 
 
 const FormContainer = styled.div`
-  display: flex;
+  /* display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; */
   padding: 20px;
-  width: 100%;
+  //width: 100%;
   max-width: 800px;
   margin: auto;
   margin-top: 10px;
@@ -147,12 +147,13 @@ const FavoriteCompanies = ({ companies }) => {
 
     return (
         <div>
-            <h2>Lista de Companias</h2>
+            <h2>Lista de Empresas</h2>
             <FormContainer>
+
                 <GroupContainer>
-                    <GroupTitle>Endereço</GroupTitle>
+                    <GroupTitle>Empresa</GroupTitle>
                     <FieldContainer>
-                        {addressFields.map(field => (
+                        {companyFields.map(field => (
                             <Field key={field.label}>
                                 <FieldLabel>{field.label}:</FieldLabel>
                                 <FieldValue>{field.value}</FieldValue>
@@ -160,7 +161,6 @@ const FavoriteCompanies = ({ companies }) => {
                         ))}
                     </FieldContainer>
                 </GroupContainer>
-
                 <GroupContainer>
                     <GroupTitle>Contato</GroupTitle>
                     <FieldContainer>
@@ -174,9 +174,9 @@ const FavoriteCompanies = ({ companies }) => {
                 </GroupContainer>
 
                 <GroupContainer>
-                    <GroupTitle>Empresa</GroupTitle>
+                    <GroupTitle>Endereço</GroupTitle>
                     <FieldContainer>
-                        {companyFields.map(field => (
+                        {addressFields.map(field => (
                             <Field key={field.label}>
                                 <FieldLabel>{field.label}:</FieldLabel>
                                 <FieldValue>{field.value}</FieldValue>

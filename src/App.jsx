@@ -17,21 +17,23 @@ const App = () => {
   };
   return (
 
-    <div>
-
+    <MainAppContainer>
       {!sessionData && (
         <Login onLoginSuccess={handleLoginSuccess} onFetchFavorites={handleFetchFavorites} />
       )}
       {favoriteCompanies.length > 0 && (
         <ListFavoriteCompanies companies={favoriteCompanies} />
       )}
-    </div>
+    </MainAppContainer>
   );
 };
 
 const MainAppContainer = styled.div`
-    display: flex;
+    display: border-box;
     justify-items: center;
+    align-items: center;
+    border-top: 70px;
+    padding: 20px;
 `;
 
 export default App;

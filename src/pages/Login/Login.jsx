@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Button from '../../components/Button';
+import Input from '../../components/Input';
 import styled from "styled-components";
 import axios from 'axios'
 const crypto = require('crypto-js');
@@ -172,12 +173,12 @@ const Login = ({ onLoginSuccess, onFetchFavorites }) => {
       <WelcomeText>Bem Vindo</WelcomeText>
       <Form onSubmit={handleLogin}>
         <InputContainer>
-          <MyInput className='input' type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="Usuário" required />
-          <MyInput type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Senha" required />
+          <MyInput className='input' type='text' value={userName} onChange={(e) => setUserName(e.target.value)} placeholder={"Usuário"} required />
+          <MyInput type={"password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder={"Senha"} required max={20} minLength={6} />
         </InputContainer>
         <ButtonContainer>
           {error && <p style={{ color: 'red' }}>{error}</p>}
-          <Button content="Entrar" type='submit' />
+          <Button content={"Entrar"} type={'submit'} />
         </ButtonContainer>
       </Form>
       <ForgotPasswordContainer>
@@ -200,7 +201,7 @@ padding: 1rem;
 border: none;
 outline: none;
 color: #FFF;
-font-size: 1rem;
+font-size: 2rem;
 font-weight: bold;
 &:focus {
   display: inline-block;
@@ -211,7 +212,7 @@ font-weight: bold;
 &::placeholder {
   color: #b9abe099;
   font-weight: 100;
-  font-size: 1rem;
+  font-size: 2rem;
 }
 `;
 
@@ -230,7 +231,7 @@ display: flex;
   color: #c2c2c284;
   text-transform: uppercase;
   letter-spacing: 0.4rem;
-  width: 90%;
+  height: 100vh;
   max-width: 1025px;
   min-width: 365px;
 
@@ -256,12 +257,13 @@ display: flex;
 
   @media only screen and (min-width: 1025px) {
     width: 30vw;
-    height: auto;
+    height: 80vh;
   }
 `;
 
 const WelcomeText = styled.h2`
   margin: 1rem 0;
+  font-size: 2.3rem;
 `;
 
 const Form = styled.form`
