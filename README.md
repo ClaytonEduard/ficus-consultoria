@@ -1,70 +1,103 @@
-# Getting Started with Create React App
+### Explicação Detalhada do Projeto
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+1. **Importação de Bibliotecas**:
+   - `axios`: Para fazer requisições HTTP.
+   - `crypto`: Para funções criptográficas.
+   - `crc32`: Para calcular valores CRC32.
 
-## Available Scripts
+2. **Função `getServerNonce`**:
+   - Faz uma requisição GET para obter o nonce do servidor.
 
-In the project directory, you can run:
+3. **Função `getClientNonce`**:
+   - Gera o nonce do cliente com base no hash SHA256 da data e hora atual em formato ISO.
+
+4. **Função `encodePassword`**:
+   - Combina o salt com a senha.
+   - Gera o hash SHA256 da combinação salt + senha.
+   - Combina várias strings conforme especificado.
+   - Gera o hash SHA256 da string combinada.
+
+5. **Função `hashPassword`**:
+   - Combina o salt com a senha.
+   - Gera e retorna o hash SHA256 da combinação salt + senha.
+
+6. **Função `authenticate`**:
+   - Obtém o nonce do servidor.
+   - Gera o nonce do cliente.
+   - Codifica a senha usando os nonces e o nome do usuário.
+   - Faz a requisição GET para a URL de autenticação.
+   - Retorna o resultado da autenticação e o hash da senha.
+
+7. **Função `getSessionId`**:
+   - Divide a string da sessão e retorna a parte antes do `+`.
+
+8. **Função `getPrivateKey`**:
+   - Calcula o CRC32 do valor da sessão.
+   - Calcula e retorna o CRC32 do hash da senha usando o valor da sessão CRC como valor inicial.
+
+9. **Função `getTimestampHex`**:
+   - Obtém o timestamp atual em milissegundos.
+   - Converte o timestamp para uma string hexadecimal.
+   - Retorna os últimos 8 dígitos da string hexadecimal.
+
+10. **Função `getSessionSignature`**:
+    - Calcula o CRC32 da timestamp hexadecimal usando a chave privada como valor inicial.
+    - Calcula e retorna o CRC32 do caminho da requisição usando o CRC da timestamp como valor inicial, convertido para hexadecimal.
+
+11. **Função `getFavoriteCompanies`**:
+    - Obtém o ID da sessão.
+    - Obtém a chave privada.
+    - Define o caminho da requisição.
+    - Obtém a timestamp em hexadecimal.
+    - Gera a assinatura da sessão combinando o ID da sessão, a timestamp e a assinatura calculada.
+    - Faz a requisição GET para a URL e retorna o resultado.
+
+12. **Exemplo de uso**:
+    - Realiza a autenticação e, em caso de sucesso, obtém a
+
+
+# Projeto de Autenticação e Pesquisa de Empresas Favoritas
+
+Este projeto demonstra como realizar a autenticação e a pesquisa de empresas favoritas utilizando Node.js, axios, e funções criptográficas.
+
+## Requisitos
+
+- Node.js (versão 12 ou superior)
+- npm (Node Package Manager)
+
+## Instalação
+
+1. Clone o repositório para a sua máquina local:
+
+```bash
+
+   git clone <URL_DO_REPOSITORIO>
+   
+```
+
+2. Navegue até o diretório do projeto:
+
+   ```bash
+
+   cd <DIRETORIO_DO_PROJETO>
+
+   ```
+3. Instale as dependências do projeto:
+
+   ```bash
+
+   npm install
+   
+   ```
+
+## Configuração
+
+Nenhuma configuração adicional é necessária. Certifique-se de que todas as dependências foram instaladas corretamente.
+
+## Executando o Projeto
+
+Para executar o projeto, utilize o seguinte comando:
 
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+O projeto irá iniciar.

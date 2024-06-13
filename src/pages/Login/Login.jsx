@@ -1,14 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import Button from '../../components/Button';
 import styled from "styled-components";
 import axios from 'axios'
-
-//import crypto from 'crypto'
-//import { crypto, enc } from 'crypto-js/sha256'
 const crypto = require('crypto-js');
-// import AuthService from '../../auth/AuthService';
-// const axios = require('axios');  // Importa a biblioteca axios para fazer requisições HTTP
-//const crypto = require('crypto'); // Importa a biblioteca crypto para usar funções criptográficas
 const crc32 = require('crc').crc32;
 
 const Login = ({ onLoginSuccess, onFetchFavorites }) => {
@@ -65,18 +59,22 @@ const Login = ({ onLoginSuccess, onFetchFavorites }) => {
   // Função para autenticar o usuário
   async function authenticate(userName, password) {
     try {
-      // Obtém o nonce do servidor
+      //! 1° Obtém o nonce do servidor
       const serverNonce = await getServerNonce(userName);
       console.log("Server nonce: " + serverNonce)
-      // Gera o nonce do cliente
+
+      // ! 2° Gera o nonce do cliente
       const clientNonce = getClientNonce();
       console.log("Cliente nonce: " + clientNonce)
-      // Codifica a senha usando os nonces e o nome do usuário
+
+      // ! 3° Codifica a senha usando os nonces e o nome do usuário
       const encodedPassword = encodePassword(userName, serverNonce, clientNonce, password);
       console.log("Enconder Pass: " + encodedPassword)
-      // Define a URL para autenticação com os parâmetros necessários
+
+      // ! 4° Define a URL para autenticação com os parâmetros necessários
       const url = `http://test.ficusconsultoria.com.br:11118/retaguarda_prospect/aaaa/auth?UserName=${userName}&Password=${encodedPassword}&ClientNonce=${clientNonce}`;
-      // Faz a requisição GET para a URL de autenticação
+
+      // ! 5° Faz a requisição GET para a URL de autenticação
       const response = await axios.get(url);
       // Retorna o resultado da autenticação e o hash da senha
       return {
@@ -94,13 +92,13 @@ const Login = ({ onLoginSuccess, onFetchFavorites }) => {
     }
   }
 
-  // Função para obter o ID da sessão
+  // ! 2 - 1 Função para obter o ID da sessão
   function getSessionId(session) {
     // Divide a string da sessão e retorna a parte antes do '+'
     return session.split('+')[0];
   }
 
-  // Função para obter a chave privada
+  //! 2 - 2  Função para obter a chave privada
   function getPrivateKey(session, passwordHash) {
     // Calcula o CRC32 do valor da sessão
     const sessionCRC = crc32(session);
@@ -108,7 +106,7 @@ const Login = ({ onLoginSuccess, onFetchFavorites }) => {
     return crc32(passwordHash, sessionCRC);
   }
 
-  // Função para obter a timestamp em hexadecimal
+  // ! 2 - 3 Função para obter a timestamp em hexadecimal
   function getTimestampHex() {
     // Obtém o timestamp atual em milissegundos
     let timestamp = Date.now();
@@ -118,7 +116,7 @@ const Login = ({ onLoginSuccess, onFetchFavorites }) => {
     return hexTimestamp.slice(-8);
   }
 
-  // Função para calcular a assinatura da sessão
+  //! 2 - 4  Função para calcular a assinatura da sessão
   function getSessionSignature(path, privateKey, timestampHex) {
     // Calcula o CRC32 da timestamp hexadecimal usando a chave privada como valor inicial
     const timestampCRC = crc32(timestampHex, privateKey);
@@ -126,7 +124,7 @@ const Login = ({ onLoginSuccess, onFetchFavorites }) => {
     return crc32(path, timestampCRC).toString(16);
   }
 
-  // Função para obter a lista de empresas favoritas
+  //! 2 - 5 Função para obter a lista de empresas favoritas
   async function getFavoriteCompanies(session, passwordHash) {
     // Obtém o ID da sessão
     const sessionId = getSessionId(session);
@@ -139,7 +137,7 @@ const Login = ({ onLoginSuccess, onFetchFavorites }) => {
     // Gera a assinatura da sessão combinando o ID da sessão, a timestamp e a assinatura calculada
     const sessionSignature = `${parseInt(sessionId).toString(16)}${timestampHex}${getSessionSignature(path, privateKey, timestampHex)}`;
 
-    // Define a URL para a requisição de empresas favoritas com a assinatura da sessão
+    //! 2 - 6  Define a URL para a requisição de empresas favoritas com a assinatura da sessão
     const url = `http://test.ficusconsultoria.com.br:11118/retaguarda_prospect/aaaa/empresaService/PegarEmpresasFavoritas?session_signature=${sessionSignature}`;
     // Faz a requisição GET para a URL e retorna o resultado
     const response = await axios.get(url);

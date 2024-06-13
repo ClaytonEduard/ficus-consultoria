@@ -1,15 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
-const Box = styled.div`
-  background-color: ${({ scroll }) => (scroll ? `palegoldenrod` : `#ffffff67`)};
-  min-height: 700px;
-  max-height:900px;
-  overflow: auto;
-  border-radius:5px;
-  margin-top:2rem;
-  padding:1rem;
-`;
 
 const FormContainer = styled.div`
   display: flex;
@@ -19,6 +10,7 @@ const FormContainer = styled.div`
   width: 100%;
   max-width: 800px;
   margin: auto;
+  margin-top: 10px;
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   backdrop-filter: blur(8.5px);
@@ -92,15 +84,8 @@ const Button = styled.button`
   }
 `;
 
-const FavoriteCompanyForm = ({ companies }) => {
+const FavoriteCompanies = ({ companies }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [scroll, setScrolled] = useState(false);
-
-    useEffect(() => {
-        setTimeout(() => {
-            setScrolled(false);
-        }, 500);
-    }, [scroll]);
 
     const handleNext = () => {
         if (currentIndex < companies.length - 1) {
@@ -161,12 +146,7 @@ const FavoriteCompanyForm = ({ companies }) => {
     ];
 
     return (
-        <Box
-            scroll={scroll}
-            onScroll={() => {
-                setScrolled(true);
-            }}
-        >
+        <div>
             <h2>Lista de Companias</h2>
             <FormContainer>
                 <GroupContainer>
@@ -214,8 +194,8 @@ const FavoriteCompanyForm = ({ companies }) => {
                     </Button>
                 </ButtonContainer>
             </FormContainer>
-        </Box>
+        </div>
     );
 };
 
-export default FavoriteCompanyForm;
+export default FavoriteCompanies;
