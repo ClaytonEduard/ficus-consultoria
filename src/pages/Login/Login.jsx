@@ -2,54 +2,49 @@ import React, { useState, useContext } from 'react';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import styled from "styled-components";
-import CryptoJS from 'crypto-js';
+
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+
 import { SessionContext } from "../../utils/SessionContext"
+import AuthService from '../../auth/AuthService';
 
+const Login = ({ onLoginSuccess }) => {
 
-function Login() {
-  const [username, setUsername] = useState('');
-  const [passwordInput, setPasswordInput] = useState('');
-  const { setSessionData, setPassword } = useContext(SessionContext);
-  const navigate = useNavigate();
+  const [userName, setUserName] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+  const authService = new AuthService();
 
   const handleLogin = async (e) => {
     e.preventDefault()
-    try {
-      const serverNonceResponse = await axios.get(`http://test.ficusconsultoria.com.br:11118/retaguarda_prospect/aaaa/auth?UserName=${username}`);
-      const serverNonce = serverNonceResponse.data.result;
-      console.log(serverNonce)
 
-      const clientNonce = CryptoJS.SHA256(new Date().toISOString()).toString();
-      const hashedPassword = CryptoJS.SHA256('salt' + passwordInput).toString();
-      const encodedPassword = CryptoJS.SHA256(`retaguarda_prospect/${username}${serverNonce}${clientNonce}${username}${hashedPassword}`).toString();
-
-      const loginResponse = await axios.get(`http://test.ficusconsultoria.com.br:11118/retaguarda_prospect/aaaa/auth?UserName=${username}&Password=${encodedPassword}&ClientNonce=${clientNonce}`);
-      const sessionData = loginResponse.data.result;
-      console.log("Login :" + loginResponse.data.result)
-      if (loginResponse != null) {
-        setSessionData(sessionData);
-        setPassword(hashedPassword);
-        localStorage.setItem('session', JSON.stringify(sessionData));
-        navigate('/favoritas');
+    authService.authenticate(userName, password).then(response => {
+      if (response) {
+        console.log('Autenticação bem-sucedida:', response);
+        const { session, passwordHash } = response;
+        return authService.getFavoriteCompanies(session, passwordHash);
       }
+    }).then(companies => {
+      if (companies) {
+        console.log('Empresas favoritas:', companies);
+      }
+    })
+      .catch(error => {
+        console.error('Erro na autenticação ou ao obter empresas favoritas:', error);
+      });
+  }
 
-    } catch (error) {
-      console.error('Erro no login:', error);
-      navigate('/login')
-    }
-  };
 
   return (
     <MainContainer>
       <WelcomeText>Bem Vindo</WelcomeText>
       <Form onSubmit={handleLogin}>
         <InputContainer>
-          <MyInput className='input' type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Usuário" required />
-          <MyInput type="password" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} placeholder="Senha" required />
+          <MyInput className='input' type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="Usuário" required />
+          <MyInput type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Senha" required />
         </InputContainer>
         <ButtonContainer>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
           <Button content="Entrar" type='submit' />
         </ButtonContainer>
       </Form>
@@ -57,6 +52,31 @@ function Login() {
         <ForgotPassword>Esqueci a senha</ForgotPassword>
       </ForgotPasswordContainer>
     </MainContainer>
+    // <div>
+    //   <h2>Login</h2>
+    //   <form onSubmit={handleLogin}>
+    //     <div>
+    //       <label>Username:</label>
+    //       <input
+    //         type="text"
+    //         value={userName}
+    //         onChange={(e) => setUserName(e.target.value)}
+    //         required
+    //       />
+    //     </div>
+    //     <div>
+    //       <label>Password:</label>
+    //       <input
+    //         type="password"
+    //         value={password}
+    //         onChange={(e) => setPassword(e.target.value)}
+    //         required
+    //       />
+    //     </div>
+    //     {error && <p style={{ color: 'red' }}>{error}</p>}
+    //     <button type="submit">Login</button>
+    //   </form>
+    // </div>
 
   );
 }
