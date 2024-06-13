@@ -4,24 +4,26 @@ import { BrowserRouter as Router, Routes, Route, Switch } from 'react-router-dom
 import ListFavoriteCompanies from './pages/ListFavoriteCompanies/ListFavoriteCompanies';
 import Login from './pages/Login/Login';
 import styled from 'styled-components';
-
 const App = () => {
   const [sessionData, setSessionData] = useState(null);
+  const [favoriteCompanies, setFavoriteCompanies] = useState([]);
+
+  const handleLoginSuccess = (data) => {
+    setSessionData(data);
+  };
+
+  const handleFetchFavorites = (companies) => {
+    setFavoriteCompanies(companies);
+  };
   return (
-    // <SessionProvider>
-    //   <Router>
-    //     <Routes>
-    //       <Route path="/login" Component={Login} />
-    //       <Route path="/favoritas" Component={ListFavoriteCompanies} />
-    //       <Route path="/" Component={Login} />
-    //     </Routes>
-    //   </Router>
-    // </SessionProvider>
+
     <div>
-      {sessionData ? (
-        <ListFavoriteCompanies sessionData={sessionData} />
-      ) : (
-        <Login onLoginSuccess={setSessionData} />
+
+      {!sessionData && (
+        <Login onLoginSuccess={handleLoginSuccess} onFetchFavorites={handleFetchFavorites} />
+      )}
+      {favoriteCompanies.length > 0 && (
+        <ListFavoriteCompanies companies={favoriteCompanies} />
       )}
     </div>
   );

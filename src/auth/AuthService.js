@@ -121,7 +121,6 @@ class AuthService {
         const timestampHex = this.getTimestampHex();
         // Gera a assinatura da sessão combinando o ID da sessão, a timestamp e a assinatura calculada
         const sessionSignature = `${parseInt(sessionId).toString(16)}${timestampHex}${this.getSessionSignature(path, privateKey, timestampHex)}`;
-
         // Define a URL para a requisição de empresas favoritas com a assinatura da sessão
         const url = `http://test.ficusconsultoria.com.br:11118/retaguarda_prospect/aaaa/empresaService/PegarEmpresasFavoritas?session_signature=${sessionSignature}`;
         // Faz a requisição GET para a URL e retorna o resultado
