@@ -12,6 +12,6 @@ body {
   align-items: center;
   height: 100vh;
   width: 100vw;
-  background-color: gray;
+  background-color: rgba(0, 0, 0, 0.47);
   font-family: "Raleway", sans-serif;
 }

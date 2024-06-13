@@ -1,33 +1,60 @@
-import React, { useEffect, useState } from 'react';
-import AuthService from '../../auth/AuthService';
+import React, { useEffect, useState, useContext } from 'react';
+import axios from 'axios';
+import { SessionContext } from '../../utils/SessionContext';
+import { crc32 } from '../../utils/crc32';
+import CryptoJS from 'crypto-js';
 
-const ListFavoriteCompanies = ({ sessionId, password }) => {
+
+function ListFavoriteCompanies() {
+    const { sessionData, password } = useContext(SessionContext);
     const [favoriteCompanies, setFavoriteCompanies] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const authService = new AuthService();
-
     useEffect(() => {
-        console.log("Received sessionId:", sessionId);
-        console.log("Received password:", password);
-
         const fetchFavoriteCompanies = async () => {
             try {
-                if (sessionId && password) {
-                    const companies = await authService.getFavoriteCompanies(sessionId, password);
-                    setFavoriteCompanies(companies);
-                } else {
-                    throw new Error('Session ID or password is missing');
+                if (!sessionData || !password) {
+                    throw new Error('Sessão ou senha não encontrada');
                 }
+                console.log("Session= " + sessionData)
+                const sessionId = sessionData.split('+')[0];
+                console.log("ID Sessao: " + sessionId)
+
+                const hashSesao = crc32(sessionData);
+
+                const hashedId = crc32(sessionId).toString(16)
+                console.log('Password: ' + password)
+                const hashedPassword = crc32(password).toString(16)
+                console.log('Hash Password: ' + hashedPassword)
+
+                const privateKey = crc32(hashSesao, hashedPassword).toString(16);
+                //const privateKey = `${sessionId}${hashSesao}${hashedPassword}`;
+
+                console.log("Passw Private: " + privateKey)
+                const timestamp = Date.now().toString();
+                console.log('Data: ' + timestamp)
+                const timestampHex = (Date.now() / 1000 | 0).toString(16).split(-8);
+                console.log('Data P: ' + timestampHex)
+
+                const path = `retaguarda_prospect/aaaa/empresaService/PegarEmpresasFavoritas`;
+
+                const crc32Timestamp = crc32(timestampHex, sessionId);
+                //console.log('Crc32 Times e KEY: ' + crc32Timestamp)
+                const crc32Path = crc32(path, timestampHex).toString(16);
+                const assinaturaSessao = crc32Path.toString(16);
+                console.log('Assinatura CR32: ' + assinaturaSessao)
+                const sessionSignature = `${sessionId}${timestampHex}${privateKey}`;
+                //console.log('Signature: ' + sessionSignature)
+
+                const response = await axios.get(`http://test.ficusconsultoria.com.br:11118/retaguarda_prospect/aaaa/empresaService/PegarEmpresasFavoritas?session_signature=${sessionSignature}`);
+
+
+                setFavoriteCompanies(response.data.result);
             } catch (error) {
-                setError(error.message);
-            } finally {
-                setLoading(false);
+                console.error('Erro ao buscar empresas:', error);
             }
         };
 
         fetchFavoriteCompanies();
-    }, [sessionId, password]);
+    }, [sessionData, password]);
 
     return (
         <div>

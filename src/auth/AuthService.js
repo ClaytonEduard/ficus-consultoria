@@ -21,6 +21,7 @@ class AuthService {
 
             //* Criptografando a senha com (salt+senha)
             const hashedPassword = CryptoJS.SHA256(SALT + password).toString(CryptoJS.enc.Hex);
+            console.log('Senha com salt: ' + hashedPassword)
 
 
             //* Criptografando a senha com o server
@@ -31,9 +32,9 @@ class AuthService {
             // ? Resposta do Server - deve vir um Json com dados de acesso
             const response = await axios.get(`${API_URL}/auth?UserName=${userName}&Password=${encodedPassword}&ClientNonce=${clientNonce}`);
 
-            await this.getFavoriteCompanies(response.data.result, hashedPassword);
-            // console.log("Response: " + favoriteCompanies);
-            return response;
+            const favoriteCompanies = await this.getFavoriteCompanies(response.data.result, hashedPassword);
+            console.log("Response Get Favorite: " + favoriteCompanies);
+            return response.data.result;
         } catch (error) {
             console.error('Erro na autenticação:', error);
         }
@@ -50,20 +51,19 @@ class AuthService {
 
     calculateSessionSignature(session, password) {
 
-        const sessionId = session.split('+')[0]; //* Id da sessao
+        const sessionId = crc32.str(String(session.split('+')[0])); // ID da sessão
 
         const sessionCRC32 = crc32.str(String(session), 0)// * Sesao
         const passwordHash = crc32.str(String(password), 0);
-        const privateKey = crc32.str(String(passwordHash), sessionCRC32)
+        const privateKey = crc32.str(String(passwordHash), sessionId)
 
-        const timestamp = Date.now();
-        const timestampHex = timestamp.toString(16).split(-8);
+        const timestampHex = (Date.now() / 1000 | 0).toString(16);
 
         const path = `retaguarda_prospect/aaaa/empresaService/PegarEmpresasFavoritas`;
 
         const crc32Timestamp = crc32.str(String(timestampHex), privateKey);
         const crc32Path = crc32.str(String(path), crc32Timestamp);
-        const assinaturaSessao = crc32Path.toString(16);
+        const assinaturaSessao = crc32Path;
 
 
         const sessionSignature = `${parseInt(sessionId).toString(16)}${timestampHex}${assinaturaSessao}`;
