@@ -2,7 +2,7 @@
 
 1. **Importação de Bibliotecas**:
    - `axios`: Para fazer requisições HTTP.
-   - `crypto`: Para funções criptográficas.
+   - `crypto-js`: Para funções criptográficas.
    - `crc32`: Para calcular valores CRC32.
 
 2. **Função `getServerNonce`**:
@@ -100,4 +100,16 @@ Para executar o projeto, utilize o seguinte comando:
 
 ### `npm start`
 
-O projeto irá iniciar.
+O projeto irá iniciar no link local http://localhost:3000/
+
+### Possui somente duas telas como proposto.
+* Atenticação do usuário
+  * user: aaaa
+  * password: 123456
+ 
+## Gif de detalhes
+https://www.loom.com/share/664d3dbac6014d28b119be146ffcea9f?sid=de6c7dee-dc06-4eec-a4dd-6a2f59271a02
+
+   
+
+  
